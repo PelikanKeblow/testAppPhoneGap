@@ -1,29 +1,25 @@
 /* CSS Document */
-
+html,body{
+	background-color:#000;
+  	width: 100%;
+	overflow:hidden;
+}
 body{
 	margin:0px;
 	padding:0px;
-	background-color:#CCC;
-	min-height:500px;
 }
 
 #content{
-	height:500px;	
+	background-color:#000;	
 }
-
-#header{
-	width:auto;
-	text-align:center;
-	background-color:#333;
-	height:40px;
-	color:#FFF;
+#diapo{
+	position:relative;
 }
-#footer{
-	width:100%;
-	text-align:center;
-	background-color:#333;
-	height:40px;
-	color:#FFF;
-	bottom:0px;
-	position:fixed;
+#diapo .diapo{
+	position:absolute;
+	overflow:hidden;
+}
+#diapo .diapo img{
+	position:absolute;
+	z-index:3;
 }
