@@ -1,0 +1,120 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Test</title>
+        <script type="text/javascript" src="phonegap.js"></script>
+        <script src="js/jquery-1.11.1.min.js"></script>
+        <script src="js/jquery.transit.min.js" type="text/javascript"></script>
+        <script type="text/javascript" src="js/diapo.js"></script>
+        <script type="text/javascript" src="js/Calage.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        
+        <script type="text/javascript">
+            app.initialize();
+			
+			var calageManager;
+			var start = {};
+			var onMove = false;
+			
+			
+			$( document ).ready(function() {
+ 		
+				
+				calageManager = new Calage();
+								
+				$(document).bind('touchmove',function(e){e.preventDefault();});
+				calageManager.calage();
+				
+				
+				// on Move
+				if(isMobile.any()){
+					/*$("#diapoOverlay").bind('touchstart', this.touchStart);
+					$("#diapoOverlay").bind('touchend',this.touchEnd);
+					$("#diapoOverlay").bind('touchmove', this.touchMove);*/
+				}else{
+					$(".overlay").mousedown(onHomePressSlide);
+					$(".overlay").mouseup(onHomeReleaseSlide);
+					$(".overlay").mousemove(onHomeMoveSlide);
+				}
+				
+				
+			});
+			
+			function onHomePressSlide(e)
+			{
+				start.x = e.pageX;
+				start.y = e.pageY;
+				onMove = true;
+			}
+			function onHomeReleaseSlide(e)
+			{
+				onMove = false;
+			}
+			function onHomeMoveSlide(e)
+			{
+				if(onMove){
+					
+					offset = {};
+	
+					offset.x = start.x - e.pageX;
+					
+					var movePas = 10;
+					if(offset.x<0){
+						movePas = -movePas;
+					}
+					
+					$("#plan0").css("left", $("#plan0").offset().left + movePas);
+					
+				}
+			}
+			
+			
+        </script>
+    </head>
+    <body>
+        <div data-role="page" id="app">
+          
+          <div id="content" class="calage_fullresize">
+          	
+            	
+                <div id="home" class="calage_fullresize">
+                
+                	
+                    <div id="home-background"></div>
+                    <div id="home-cloud"></div>
+                    
+                    <div id="home-content" class="calage_fullresize">
+                    	
+                        <div class="overlay calage_fullresize_nolimit"></div>
+                        
+                        <div id="plan0" class="plan">
+                        	
+                            <div class="profil" style="left:0px;"></div>
+                            
+                            <div class="profil" style="left:800px;"></div>
+                            
+                            <div class="profil" style="left:1600px;"></div>
+                            
+                            <div class="profil" style="left:2100px;"></div>
+                        
+                        </div>
+                    
+                    </div>
+                    
+                    <div id="home-bottom">
+                    	<div class="logo-horizons"></div>
+                    </div>
+                
+                </div>
+                
+            
+          </div>
+          
+          
+        </div>
+        
+    </body>
+</html>

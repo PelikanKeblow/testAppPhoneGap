@@ -1,0 +1,18 @@
+html{
+	overflow:hidden;	
+	font-family: 'Luckiest Guy', cursive;
+	background-color:#fdf822;
+	
+}
+
+.fontFamilyCorben{
+	font-family: 'Corben', cursive;	
+}
+
+#myCanvas{
+	width:100%;
+	z-index:1;
+	max-width:640px;
+	margin:0px auto 0px auto;
+}
+

@@ -1,0 +1,1121 @@
+<!doctype html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=no" />
+<meta charset="iso-8859-1">
+<title>Nesquik - Le petit-d&eacute;jeuner des champions</title>
+<link href='http://fonts.googleapis.com/css?family=Luckiest+Guy' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Corben:400,700' rel='stylesheet' type='text/css'>
+<link href="inc/css/reset.css" rel="stylesheet" type="text/css">
+<link href="inc/css/game.css" rel="stylesheet" type="text/css">
+</head>
+
+<script type="text/javascript" src="inc/js/kinetic-v5.1.0.min.js"></script>
+<script type="text/javascript" src="inc/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="inc/js/assets.js"></script>
+<script type="text/javascript" src="inc/js/core.js"></script>
+<body>
+
+<div id="myCanvas"></div>
+<form id="frmGame" action="bravo.html" method="post">
+    <input type="hidden" id="score" name="score" value="0" />
+    <input type="hidden" id="niveau" name="niveau" value="<?= $niveau; ?>" />
+</form>
+
+<script>
+	  
+	 
+	  
+	  // const
+	  var POSTION_START = new Array(100, 270, 480);
+	  var TIME_BY_NIVEAU = new Array(60, 60, 60, 60);
+	  var WAIT_ITEM_DOWN_BY_NIVEAU = new Array(0.5, 0.4, 0.3, 0.3);
+	  var VITESSE_ITEM_DOWN_BY_NIVEAU = new Array(4, 3, 2, 0.8);
+	  var PAS_NEWITEM = new Array(3,2,1, 0.1);
+	  var LUCKY = 3;
+	  var PAS_COLLISION = 555;
+	  var INIT_WIDTH = 640;
+	  var INIT_HEIGHT = 770;
+	  var RATIO = INIT_WIDTH/INIT_HEIGHT;
+	  
+	  // user data
+	  var dataGameInfos = new Object();
+	  dataGameInfos.currentScore = 0;
+	  dataGameInfos.currentTimer = 0;
+	  dataGameInfos.currentNiveau = 3;
+	  dataGameInfos.best = new Array();
+	  dataGameInfos.best[0] = 0;
+	  dataGameInfos.best[1] = 0;
+	  dataGameInfos.best[2] = 0;
+	  dataGameInfos.best[3] = 0;
+		
+	  // data
+	  var new_ratio = 1;
+	  var timeNew;
+	  var tweenArray = new Array();
+	  
+	  // game data
+	  var playerPositionIndex = 1;
+	  
+	  // controller var
+	  var action_left = false;
+	  var action_right = false;
+	  var active_controller = false;
+	  
+	  // reference
+	  var stage = null;
+	  var game_layer = null;
+	  var hub_btn_Right = null;
+	  var hub_btn_Left = null;
+	  var s_pause_back_full = null;
+	  
+	  // sound
+	  var mute = false;
+	  
+	  // global event keyboardController
+	  $( window ).keydown(function(e) {
+				if(active_controller)
+				{
+					 if (e.keyCode == 37) { //Left Arrow Key
+						action_left = true;
+					}
+					if (e.keyCode == 39) { //Right Arrow Key
+						action_right = true;
+					}
+				}
+		 });
+		 $( window ).keyup(function(e) {
+				if(active_controller)
+				{
+					
+					if (e.keyCode == 37) { //Left Arrow Key
+						action_left = false;
+					}
+					if (e.keyCode == 39) { //Right Arrow Key
+						action_right = false;
+					}
+					
+				}
+		 });
+	  
+
+	  function startGame()
+	  {
+		// STAGE
+		stage = new Kinetic.Stage({
+			container: 'myCanvas',
+			width: INIT_WIDTH,
+			height: INIT_HEIGHT
+		});
+		
+		
+		
+		// couche
+		game_layer = new Kinetic.Layer();
+		
+		var inGameGroupe = new Kinetic.Group({x: 0,y: 0}); 
+		
+		// background
+		var backgroundImage = new Kinetic.Image({
+          x: 0,
+          y: 0,
+          image: imageBack
+        });
+		inGameGroupe.add(backgroundImage);
+		
+		// player
+		var playerGroup = new Kinetic.Group({x: 0,y: 0});
+		var playerImage = new Kinetic.Image({
+          x:-50,
+          y: stage.height()- 234,
+          image: icon_lapin
+        });
+		var playerAnimate = new Kinetic.Sprite({
+          x:-50,
+          y: stage.height()- 234,
+          image: icon_lapin_animate,
+          animation: 'idle',
+          animations: {
+            idle: [
+              // x, y, width, height (4 frames)
+              0,0,203,234,
+              203,0,203,234,
+              406,0,203,234
+            ]
+          },
+          frameRate: 3,
+          frameIndex: 0
+        });
+		playerGroup.add(playerAnimate);
+		playerAnimate.start();
+		
+		
+		
+		// item group
+		var itemGroup = new Kinetic.Group({x: 0,y: 0});
+		
+		// bonus/malus group
+		var fxGroup = new Kinetic.Group({x: 0,y: 0});
+		
+		// screen
+		var screenPage = new Kinetic.Group({x: 0,y: 0});
+		
+		// 3 2 1 start
+		var startText = new Kinetic.Text({
+					x: 0,
+					y: 220,
+					width:INIT_WIDTH,
+					text: '3',
+					fontSize: 97,
+					fill:'#FFFFFF',
+					align: 'center',
+					stroke: '#0054a4',
+					strokeEnabled:true,
+					strokeWidth:3,
+					fontFamily: 'Luckiest Guy'
+			});	
+		
+		
+		// hub
+		var hub = new Kinetic.Group({x: 0,y: 0});
+		var scoreText = null;
+		var timeLeft = null;
+		
+		// game data
+		inGameGroupe.add(playerGroup);
+		inGameGroupe.add(itemGroup);
+		inGameGroupe.add(fxGroup);
+		inGameGroupe.add(hub);
+		//game_layer.add(screenPage);
+		
+		
+		stage.add(game_layer); 
+		
+		 
+		  
+		// méthode
+		
+		
+		var onEnterFrame = new Kinetic.Animation(function(frame) {
+         
+		  // collision Test
+		  collisionTest();
+		 
+		  // controller
+		  if(action_left){
+			anmiateScaleButton(hub_btn_Left);
+			moveRabbitTo(playerPositionIndex-1);
+			action_left = false;
+		  }
+		  if(action_right){
+			anmiateScaleButton(hub_btn_Right);
+			moveRabbitTo(playerPositionIndex+1);
+			action_right = false;
+		  }
+		  
+		  
+        }, game_layer);
+		
+		
+		
+		
+		var moveRabbitTo = function moveRabbitTo(index)
+		{
+			playerPositionIndex = Math.max(0,Math.min(index, POSTION_START.length-1));
+			playerGroup.x(POSTION_START[index]);
+			
+			playSound('puzzle-place');
+		}
+		
+		
+		var addController = function addController()
+		{
+			//onEnterFrame.start();
+			active_controller = true;
+		}
+		
+		
+		var collisionTest = function collisionTest()
+		{
+			var currentGildrendItemArray = itemGroup.getChildren().toArray();
+			for(var i=0; i<currentGildrendItemArray.length;i++){
+				testIfCollisionPlayer(currentGildrendItemArray[i]);
+			}
+			
+		}
+		
+		var testIfCollisionPlayer = function testIfCollisionPlayer(objTo)
+		{
+			
+			if(POSTION_START[playerPositionIndex] == objTo.x())
+			{
+				if(objTo.y() >= PAS_COLLISION && objTo.y() <= INIT_HEIGHT-40){
+					takeTweenOjObj(objTo);
+					checkCollisionEffect(objTo.name());
+					objTo.destroy();
+				  	itemGroup.draw();
+					
+				}
+				
+			}
+			
+		}
+		
+		var takeTweenOjObj = function takeTweenOjObj(obj)
+		{
+			for(var i=0;i<tweenArray.length;i++)
+			{
+				if(tweenArray[i].node == obj){
+					tweenArray[i].destroy();
+					tweenArray.splice(i,1);
+					break;
+				}
+				
+			}
+		}
+		var takeTweenOjTween = function takeTweenOjTween(thetween)
+		{
+			for(var i=0;i<tweenArray.length;i++)
+			{
+				if(tweenArray[i] == thetween){
+					tweenArray[i].destroy();
+					tweenArray.splice(i,1);
+					break;
+				}
+				
+			}
+		}
+		
+		
+		
+		var checkCollisionEffect = function checkCollisionEffect(nameOf)
+		{
+			switch(nameOf)
+			{
+				case "bonus":
+					showBonus();
+				break;
+				case "malus0":
+					showMalus(0);
+				break;
+				case "malus1":
+					showMalus(1);
+				break;
+			}
+			
+			updateHub();
+		}
+		
+		var showMalus = function showMalus(malus)
+		{
+			var itemMalus = new Kinetic.Image({ 
+			  x: POSTION_START[playerPositionIndex],
+			  y: PAS_COLLISION-50,
+			  image: images_malus[malus]
+			});
+			
+			var tween = new Kinetic.Tween({
+			  node: itemMalus,
+			  y:PAS_COLLISION-200,
+			  opacity:0,
+			  duration: 1.5,
+			  easing: Kinetic.Easings.StrongEaseOut,
+			  onFinish: function()
+			  {
+				  itemMalus.destroy();
+				  fxGroup.draw();
+				  takeTweenOjTween(tween);
+			  }
+			});
+			
+			tweenArray.push(tween);
+			
+			tween.play();
+			
+			fxGroup.add(itemMalus);
+			
+			dataGameInfos.currentTimer-=2;
+			if(dataGameInfos.currentTimer < 0){
+				endGame();
+			}
+			
+			updateHubTimer();
+			
+			playSound('nesquik-malus');
+			
+		}
+		var showBonus = function showBonus()
+		{
+			var itemBonus = new Kinetic.Image({ 
+			  x: POSTION_START[playerPositionIndex],
+			  y: PAS_COLLISION-50,
+			  image: img_bonus
+			});
+			
+			var tween = new Kinetic.Tween({
+			  node: itemBonus,
+			  y:PAS_COLLISION-200,
+			  opacity:0,
+			  duration: 1.5,
+			  easing: Kinetic.Easings.StrongEaseOut,
+			  onFinish: function()
+			  {
+				  itemBonus.destroy();
+				  fxGroup.draw();
+				  takeTweenOjTween(tween);
+			  }
+			});
+			
+			
+			tweenArray.push(tween);
+			
+			tween.play();
+			
+			fxGroup.add(itemBonus);
+			
+			dataGameInfos.currentScore++;
+			
+			playSound('sound_finpuzzle');
+		}
+		
+		var playSound = function playSound(sourceSound)
+		{
+			if(!mute && !isMobile.any()){
+				var aleatoire = Math.random()*1000;
+				$('#sound-content').append('<audio id="sound_'+aleatoire+'"><source src="inc/sound/'+sourceSound+'.mp3" type="audio/mpeg"><source src="inc/sound/'+sourceSound+'.ogg" type="audio/ogg"></audio>');
+				var elem = document.getElementById('sound_'+aleatoire);
+				$(elem).bind("ended", function(){ $(this).remove(); });
+				elem.play();
+			}
+			
+		}
+		
+		/**
+		*	Create HUB
+		*/
+		var createHub = function()
+		{
+			
+			var hub_background = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  image: img_hub_background
+			});
+			
+			var hub_chrono = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  image: img_hub_chrono
+			});
+			
+			var hub_bol = new Kinetic.Image({ 
+			  x: 144,
+			  y: 29,
+			  image: img_hub_bol
+			});
+			//img_btn_to_mute_on
+			//img_btn_to_mute_off
+			//img_btn_to_pause
+			var hub_btn_mute = new Kinetic.Group({x: 417,y: 16, width:102, height:102});
+			
+			var hub_btn_MuteOn = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  visible:false,
+			  image: img_btn_to_mute_on
+			});
+			hub_btn_mute.add(hub_btn_MuteOn);
+			var hub_btn_MuteOff = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  image: img_btn_to_mute_off
+			});
+			hub_btn_mute.add(hub_btn_MuteOff);
+			
+			
+			
+			var hub_btn_Pause = new Kinetic.Image({ 
+			  x: 530,
+			  y: 16,
+			  width:102, height:102,
+			  image: img_btn_to_pause
+			});
+			
+			var bhub_btn_Left = new Kinetic.Group({x: 0,y: 0});
+			hub_btn_Left = new Kinetic.Image({ 
+			  x: 5,
+			  y: 545,
+			  width:108,height:108,
+			  image: img_btn_Left
+			});
+			var hub_zone_Left = new Kinetic.Rect({
+			  width: 200,
+			  height: 300,
+			  y:450,
+			  fill: '#f1dd70',
+			  opacity:0
+			});
+			bhub_btn_Left.add(hub_zone_Left);
+			bhub_btn_Left.add(hub_btn_Left);
+			
+			var bhub_btn_Right = new Kinetic.Group({x: 0,y: 0});
+			hub_btn_Right = new Kinetic.Image({ 
+			  x: INIT_WIDTH - 108,
+			  y: 545,
+			  width:108,height:108,
+			  image: img_btn_Right
+			});
+			var hub_zone_Right = new Kinetic.Rect({
+			  x:INIT_WIDTH-200,
+			  width: 200,
+			  height: 300,
+			  y:450,
+			  fill: '#f1dd70',
+			  opacity:0
+			});
+			bhub_btn_Right.add(hub_zone_Right);
+			bhub_btn_Right.add(hub_btn_Right);
+
+			// actions
+			hub_btn_Pause.on('click touchstart', function() {
+				anmiateScaleButton(this);
+				PauseGame();
+			});
+			
+			hub_btn_Pause.on('mouseover', function() {
+                document.body.style.cursor = 'pointer';
+            });
+            hub_btn_Pause.on('mouseout', function() {
+                document.body.style.cursor = 'default';
+            });
+			
+			hub_btn_mute.on('click touchstart', function() {
+				anmiateScaleButton(this);
+				if(!mute){
+					hub_btn_MuteOn.visible(true);
+					hub_btn_MuteOff.visible(false);
+				}else{
+					hub_btn_MuteOn.visible(false);
+					hub_btn_MuteOff.visible(true);
+				}
+				mute = !mute;
+				
+			});
+			
+			hub_btn_mute.on('mouseover', function() {
+                document.body.style.cursor = 'pointer';
+            });
+            hub_btn_mute.on('mouseout', function() {
+                document.body.style.cursor = 'default';
+            });
+			
+			
+			
+			// controller
+			
+			
+				bhub_btn_Left.on('mousedown touchstart', function() {
+					action_left = true;
+				});
+				bhub_btn_Left.on('mouseup touchend', function() {
+					action_left = false;
+				});
+				
+				
+				bhub_btn_Right.on('mousedown touchstart', function() {
+					action_right = true;
+				});
+				bhub_btn_Right.on('mouseup touchend', function() {
+					action_right = false;
+				});
+			
+			
+			
+			// add
+			hub.add(hub_background); 
+			hub.add(hub_chrono); 
+			hub.add(hub_bol); 
+			hub.add(hub_btn_mute); 
+			hub.add(hub_btn_Pause); 
+			if(isMobile.any()){
+				hub.add(bhub_btn_Left); 
+				hub.add(bhub_btn_Right);
+			}
+			
+			updateHub();
+		}
+		
+		var PauseGame = function PauseGame()
+		{
+			
+			// paused Tween
+			for(var i=0; i<tweenArray.length; i++)
+			{
+				tweenArray[i].pause();
+			}
+			
+			// stop animation
+			onEnterFrame.stop();
+			
+			// show PauseScreen
+			showScreen(createPauseScreen());
+		}
+		
+		var ResumeGame = function ResumeGame()
+		{
+			// resume Tween
+			for(var i=0; i<tweenArray.length; i++)
+			{
+				tweenArray[i].play();
+			}
+			onEnterFrame.start();
+			
+			removeScreen();
+		}
+		
+		var updateHubTimer = function updateHubTimer()
+		{
+			if(timeLeft == null)
+			{
+				timeLeft = new Kinetic.Text({
+					x: 16,
+					y: 50,
+					width:100,
+					text: '1:30',
+					fontSize: 38,
+					fill:'#FFFFFF',
+					align: 'center',
+					stroke: '#033877',
+					strokeEnabled:true,
+					strokeWidth:1,
+					fontFamily: 'Luckiest Guy'
+				});	
+				hub.add(timeLeft);
+				
+			}
+			
+			timeLeft.text(SecondeToTime(dataGameInfos.currentTimer));
+		}
+		
+		var updateHub = function updateHub()
+		{
+			if(scoreText == null){
+				scoreText = new Kinetic.Text({
+					x: 255,
+					y: 46,
+					text: '00',
+					fontSize: 52,
+					fill:'#024993',
+					align: 'center',
+					fontFamily: 'Luckiest Guy'
+				});	
+				hub.add(scoreText);
+			}
+			
+			scoreText.text(NumberDecal(dataGameInfos.currentScore));
+		}
+		
+		
+		var addItem = function addItem(luckyTo)
+		{
+			var isBad = false;
+			if(luckyTo > 2){
+				isBad  = true;
+				var badIndex = Math.floor(Math.random()*images_bad.length);
+			}
+			
+			
+			var itemMove = new Kinetic.Image({
+			  name: (isBad) ? "malus"+badIndex : "bonus",
+			  x: POSTION_START[Math.floor(Math.random()*POSTION_START.length)],
+			  y: 20,
+			  image: (isBad) ? images_bad[badIndex] : images_good[0]
+			});
+			
+			
+			
+			itemGroup.add(itemMove); 
+			
+			// move 
+			var tween = new Kinetic.Tween({
+			  node: itemMove,
+			  y:INIT_HEIGHT,
+			  duration: VITESSE_ITEM_DOWN_BY_NIVEAU[dataGameInfos.currentNiveau],
+			  onFinish: function()
+			  {
+				  itemMove.destroy();
+				  itemGroup.draw();
+				  takeTweenOjTween(tween);
+				  //console.log(itemGroup.getChildren().toArray().length);
+			  }
+			});
+			
+			tweenArray.push(tween);
+			
+			tween.play();
+			  
+		} 
+		
+		
+		var addNewItemInTime = function addNewItemInTime()
+		{
+			addItem(Math.random()*LUCKY);
+			
+			var tween = new Kinetic.Tween({
+			  node: game_layer,
+			  duration: WAIT_ITEM_DOWN_BY_NIVEAU[dataGameInfos.currentNiveau]+Math.random()*PAS_NEWITEM[dataGameInfos.currentNiveau],
+			  onFinish: function()
+			  {
+				
+				takeTweenOjTween(tween);
+				addNewItemInTime();
+			  }
+			});
+			tween.play();
+			
+			tweenArray.push(tween);
+		}
+		
+		var createGreenBtn = function createGreenBtn(textImg)
+		{
+			var greenBtn = new Kinetic.Group({x: 0,y: 0});
+			
+			var backGreen = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  name:'backGreen',
+			  image: img_btn_green
+			});
+			var backGreenRoll = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  name:'backGreenRoll',
+			  visible:false,
+			  image: img_btn_green_roll
+			});
+			
+			var backGreenTxt = new Kinetic.Image({ 
+			  x: 24,
+			  y: 26,
+			  name:'backGreenTxt',
+			  image: textImg
+			});
+			
+			
+			/*var texteGreen = new Kinetic.Text({
+					x: 0,
+					y: 36,
+					width:380,
+					lineHeight:106,
+					text: text,
+					fontSize: 32,
+					fill:'#FFFFFF',
+					align: 'center',
+					stroke: '#459b19',
+					strokeEnabled:true,
+					strokeWidth:2,
+					fontStyle:'bold',
+					fontFamily: 'Corben'
+			});	*/
+			
+			
+			//
+			greenBtn.add(backGreen);
+			greenBtn.add(backGreenRoll);
+			greenBtn.add(backGreenTxt);
+			
+			
+			greenBtn.on('mouseenter', function() {
+				document.body.style.cursor = 'pointer';
+				this.find(".backGreen").visible(false);
+				this.find(".backGreenRoll").visible(true);
+				game_layer.draw();
+			});
+			greenBtn.on('mouseleave', function() {
+				this.find(".backGreen").visible(true);
+				this.find(".backGreenRoll").visible(false);
+				document.body.style.cursor = 'default';
+				game_layer.draw();
+			});
+			
+		
+			
+			return greenBtn;
+		}
+		
+		var anmiateScaleButton = function anmiateScaleButton(btn)
+		{
+			
+			
+				 var tween = new Kinetic.Tween({
+					node: btn,
+					scaleX: 0.8,
+					scaleY: 0.8,
+					x:btn.x()+ 0.8*btn.width()*0.15,
+					y:btn.y()+ 0.8*btn.height()*0.15,
+					duration: 0.05,
+					onFinish: function()
+					{
+						tween.reverse();
+					}
+				  });
+				  tween.play();
+			
+		}
+		
+		
+		// ----------------------------------------------------- Screen
+		
+		
+		
+		
+		/**
+		 *	PAUSE SCREEN
+		*/
+		var createPauseScreen = function createPauseScreen()
+		{
+			
+			
+			// background
+			var s_pause_back = new Kinetic.Rect({
+			  width: INIT_WIDTH,
+			  height: INIT_HEIGHT,
+			  fill: '#f1dd70'
+			});
+			
+			
+			s_pause_back_full = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  visible:false,
+			  image: img_back_pause
+			});
+			
+			// titre
+			var pauseTexte = new Kinetic.Text({
+					x: 0,
+					y: 100,
+					width:INIT_WIDTH-20,
+					text: 'PAUSE',
+					fontSize: 83,
+					fill:'#FFFFFF',
+					align: 'center',
+					stroke: '#0054a4',
+					strokeEnabled:true,
+					strokeWidth:3,
+					fontFamily: 'Luckiest Guy'
+			});	
+			
+			// btn continuer
+			var btnContinuer = createGreenBtn(img_txt_continuer);
+			btnContinuer.y(220);
+			btnContinuer.x(INIT_WIDTH*0.5 - 200);
+			btnContinuer.on('click touchstart', function() {
+				
+				ResumeGame();
+			});
+			
+			
+			// btn recommencer
+			var btnRecommencer = createGreenBtn(img_txt_recommencer);
+			btnRecommencer.y(368);
+			btnRecommencer.x(INIT_WIDTH*0.5 - 200);
+			btnRecommencer.on('click touchstart', function() {
+				window.location.href = "choix-niveau.php";
+			});
+			
+			
+			
+			
+			// btn menu des jeux
+			var btnMenu = createGreenBtn(img_txt_menu);
+			btnMenu.y(516);
+			btnMenu.x(INIT_WIDTH*0.5 - 200);
+			btnMenu.on('click touchstart', function() {
+				top.location.href = "http://nesquik.msn.com/jeux/";
+			});
+			
+			var screenPause = new Kinetic.Group({x: 0,y: 0});
+			screenPause.add(s_pause_back);
+			screenPause.add(s_pause_back_full);
+			screenPause.add(pauseTexte);
+			screenPause.add(btnContinuer);
+			screenPause.add(btnRecommencer);
+			screenPause.add(btnMenu);
+			
+			if(stage.width()>=604){
+				s_pause_back_full.visible(true);
+			}
+			
+			return screenPause;
+		}
+		
+		
+		
+		
+		var showScreen = function showScreen(screnToShow)
+		{
+			removeScreen();
+			screenPage.add(screnToShow);
+			game_layer.add(screenPage);
+			game_layer.draw();
+		}
+		var removeScreen = function removeScreen()
+		{
+			
+			screenPage.destroyChildren();
+			screenPage.destroy();
+		}
+		
+		var timerStart = function timerStart()
+		  {
+			  dataGameInfos.currentTimer = TIME_BY_NIVEAU[dataGameInfos.currentNiveau];
+			  updateHubTimer();
+			  var tween = new Kinetic.Tween({
+				node: game_layer,
+				duration: 1,
+				onFinish: function()
+				{
+					
+				  updateHubTimer();
+				  dataGameInfos.currentTimer--;
+				  if(dataGameInfos.currentTimer >= 0){
+					  tween.reset();
+				  	  tween.play();
+				  }else{
+					  endGame();
+				  }
+				  
+				  
+				}
+			  });
+			  tween.play();
+			  tweenArray.push(tween);
+		  }
+		  
+		  var endGame = function endGame()
+		  {
+			// paused Tween
+			for(var i=0; i<tweenArray.length; i++)
+			{
+				tweenArray[i].pause();
+			}
+			
+			// stop animation
+			onEnterFrame.stop();
+			
+			// show PauseScreen
+			//showScreen(createEndScreen());
+			$("#frmGame #score").val(dataGameInfos.currentScore);
+			$("#frmGame").submit();
+			
+		  }
+		
+		var clear = function clear()
+		{
+			dataGameInfos.currentScore = 0;
+			itemGroup.destroyChildren();
+			fxGroup.destroyChildren();
+			
+			for(var i=0; i<tweenArray.length; i++)
+			{
+				tweenArray[i].destroy();
+			}
+			tweenArray = new Array();
+		}
+		
+		var start = function start(){
+			
+			removeScreen();
+			moveRabbitTo(1);
+			dataGameInfos.currentTimer = TIME_BY_NIVEAU[dataGameInfos.currentNiveau];
+			updateHub();
+			updateHubTimer();
+			
+			fxGroup.add(startText);
+			startText.text("3");
+			
+			var tweenStart = new Kinetic.Tween({
+				node: startText,
+				duration: 1,
+				onFinish: function()
+				{
+				  
+				  if(startText.text() == "C'EST PARTI !"){
+					  endTimerStart();
+				  }else{
+					  if(parseInt(startText.text()) > 1){
+						  startText.text(parseInt(startText.text())-1);
+						  tweenStart.reset();
+						  tweenStart.play();
+					  }else{
+						 startText.text("C'EST PARTI !");
+						 tweenStart.duration=1.5;
+						 tweenStart.reset();
+						 tweenStart.play();
+					  }
+				  }
+				  
+				    
+				
+				  
+				  
+				}
+			  });
+			tweenStart.play();
+			
+			
+		}
+		
+		
+		
+		var endTimerStart = function endTimerStart()
+		{
+			startText.text("");
+			timerStart();
+			onEnterFrame.start();
+			addNewItemInTime();
+		}
+		
+		var showBestScore = function showBestScore()
+		{
+			var deja_content = new Kinetic.Group({x: 0,y: 0, id:"hub_deja"});
+			
+			// back
+			var hub_deja = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  image: img_hub_deja
+			});
+			
+			deja_content.add(hub_deja);
+			
+			// close
+			var hub_close = new Kinetic.Image({ 
+			  x: 530,
+			  y: 190,
+			  width:102,
+			  height:102,
+			  image: img_btnClose
+			});
+			
+			hub_close.on('click touchstart', function() {
+				
+				anmiateScaleButton(this);
+				
+				var tweenStart = new Kinetic.Tween(
+					{
+						node:deja_content,
+						duration:0.6,
+						opacity:0,
+						easing: Kinetic.Easings.EaseOut,
+						onFinish: function()
+						{
+							deja_content.destroy();
+							start();
+						}
+					}
+				);
+				tweenStart.play();
+				
+			});
+			
+			deja_content.add(hub_close);
+			
+			// text
+			var textDeja = new Kinetic.Text({
+					x: 0,
+					y: 390,
+					width:INIT_WIDTH,
+					text: 'Meilleur score :',
+					fontSize: 50,
+					fill:'#FFFFFF',
+					align: 'center',
+					stroke: '#0054a4',
+					strokeEnabled:true,
+					strokeWidth:3,
+					fontFamily: 'Luckiest Guy'
+			});	
+			deja_content.add(textDeja);
+			var textScore = new Kinetic.Text({
+					x: 0,
+					y: 450,
+					width:INIT_WIDTH,
+					text: NumberDecal(dataGameInfos.best[dataGameInfos.currentNiveau])+' BOLS',
+					fontSize: 70,
+					fill:'#FFFFFF',
+					align: 'center',
+					stroke: '#0054a4',
+					strokeEnabled:true,
+					strokeWidth:3,
+					fontFamily: 'Luckiest Guy'
+			});	
+			deja_content.add(textScore);
+			
+			hub.add(deja_content);
+			
+		}
+		
+		var initGame = function initGame()
+		{
+			game_layer.add(inGameGroupe);
+			
+			// init game data
+			createHub();
+			addController();
+			moveRabbitTo(1);
+			//start();
+			if( dataGameInfos.best[dataGameInfos.currentNiveau] > 0){
+				// old score
+				showBestScore();
+			}else{
+				start();
+			}
+			var tweenStart = new Kinetic.Tween({node:game_layer,duration:0.1});
+			tweenStart.play();
+		}
+		
+		// start
+		
+		initGame();
+		game_layer.draw(); 
+		
+	  }
+	  
+	  
+	  
+
+	  for(var i=0; i<liste_image.length;i++){
+		  liste_image[i].onload = loadImage;
+	  }
+	  
+	  
+	  function loadImage()
+	  {
+		 index_load ++;
+		 
+		 if(index_load >= liste_image.length){
+			
+		 }
+		 
+	  }
+	  
+	  
+	  
+</script>
+<div id="sound-content">
+    <audio id="sound_tik">
+        <source src="inc/sound/puzzle-place.mp3" type="audio/mpeg">
+        <source src="inc/sound/puzzle-place.ogg" type="audio/ogg">
+    </audio>
+    <audio id="sound_good">
+        <source src="inc/sound/sound_finpuzzle.mp3" type="audio/mpeg">
+        <source src="inc/sound/sound_finpuzzle.ogg" type="audio/ogg">
+    </audio>
+    <audio id="sound_bad">
+        <source src="inc/sound/nesquik-malus.mp3" type="audio/mpeg">
+        <source src="inc/sound/nesquik-malus.ogg" type="audio/ogg">
+    </audio>
+</div>
+</body>
+</html>

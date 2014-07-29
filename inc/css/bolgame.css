@@ -1,0 +1,231 @@
+/* CSS Document */
+
+body {margin:0; padding:0; overflow:hidden;}
+.wrapper {
+	width:601px; height:676px; 
+	margin:0 auto; 
+	position:relative; 
+	border:2px solid #fdf604; 
+	border-radius:10px; 
+	webkit-border-radius:10px; 
+	background-color:#fdf604;  
+	background-clip: padding-box;  
+	-moz-background-clip: padding;  
+	-webkit-background-clip: padding;
+}
+
+::selection {color:transparent;background:transparent;}
+::-moz-selection {color:transparent;background:transparent;}
+
+a {text-decoration:none!important;}
+a.ablk {display:block; }
+
+/* boutons */
+
+.BTvert {
+	width:100%; 
+	height:100%;
+	max-width:380px; 
+	max-height:106px;
+	display: block;
+	position: absolute;
+	background: url(../img/btnGreen.png) no-repeat center center;
+	background-size: 100%;
+	cursor: pointer;
+}
+.home .BTvert,.panneauxFin .BTvert {
+	background: url(../img/BT-vert.png) no-repeat center center;
+	width:240px; 
+	height:70px;	
+}
+
+.BTvert.down {background-size:88%;}
+.BTvert:hover {background-image:url(../img/BT-vert-roll.png);}
+.BTvert span {width:100%; height:100%; display:block; background: no-repeat center center; background-size:auto; color:rgba(255,255,255,0); text-align:center; line-height:70px;}
+.BTvert.down span {background-size:166px auto;}
+
+
+
+.BTvert#IBTjouer span {background-image:url(../img/BTtxt-jouer.png);}
+.BTvert#IBTcontinuer span {background-image:url(../img/BTtxt-continuer.png);}
+.BTvert#IBTrecommencer span {background-image:url(../img/BTtxt-recommencer.png);}
+.BTvert#IBTmenujeux span {background-image:url(../img/BTtxt-menujeux.png);}
+
+
+
+.BTvertCourt {
+	width: 180px;
+	height: 76px;
+	display: block;
+	position: absolute;
+	background: url(../img/BT-vertCourt.png) no-repeat center center;
+	background-size: 100%;
+	cursor: pointer;
+}
+.BTvertCourt span {width:100%; height:100%; display:block; background: no-repeat center center; background-size:70%; color:rgba(255,255,255,0); text-align:center; line-height:70px;}
+.BTvertCourt.down {background-size:88%;}
+.BTvertCourt.down span {background-size:60%;}
+
+.BTrond {
+	width:55px;
+	height:55px;
+	display: block;
+	position: absolute;
+	background: no-repeat center center;
+	background-size: 48px auto;
+	cursor: pointer;
+}
+.BTrond.down {background-size:42px auto;}
+
+.BTrond#aide {background-image:url(../img/BT-aide.png);}
+.BTrond#pause {background-image:url(../img/BT-pause.png);}
+.BTrond#next {background-image:url(../img/BT-next.png);}
+.BTrond#close {background-image:url(../img/BT-close.png);}
+.BTrond#son.on {background-image:url(../img/BT-sonon.png);}
+.BTrond#son.off {background-image:url(../img/BT-sonoff.png);}
+
+
+
+
+
+
+
+
+/* home */
+.content {
+	width:601px; height:676px; 
+	border-radius:10px; 
+	webkit-border-radius:10px;  
+	background-clip: padding-box;  
+	-moz-background-clip: padding;  
+	-webkit-background-clip: padding;
+}
+
+.content.home { position:absolute;	background:url(../img/bacgkroundHome.jpg) no-repeat center top;}
+.content.home a {width:inherit;}
+.content.home #IBTjouer {position:relative; margin:-20px auto 0;}
+.content.home .titreHome {display:block; width:100%; height:auto; margin:0 auto;}
+
+/* choix */
+
+.content.choixniveau {
+	background:url(../img/img-parchemin.jpg) no-repeat center top;
+	width:601px; height:676px;
+	overflow:hidden;
+	
+}
+
+.choix {width:480px; margin:0 auto; position:relative;}
+.choix img.titrechoix {
+	display:block;
+	margin:0 auto 10px;
+	padding-top:90px;
+	width:431px;
+	position:relative;
+}
+
+#PanChoixNiveau img.titrechoix  {margin:0 auto 30px;}
+
+/* 242x232 = 0.96*/
+.choix img.btimg {
+	width:160px; 
+	height:auto;
+	border:5px solid rgba(82,73,64,0.4);
+	display:block;
+	border-radius:5px;
+	float:left;
+	margin:10px 0 0 60px;
+	cursor:pointer;
+}
+
+.choix img.btimg:nth-child(2n+1) {margin:10px 0 0 10px;}
+.choix img.btimg:hover {
+	border-color:rgba(255,255,255,1);
+}
+.choix img.btimg.down {
+	transform-origin: top 50% left 50%;
+	-webkit-transform-origin: top 50% left 50%;
+	-o-transform-origin: top 50% left 50%;
+	-moz-transform-origin: top 50% left 50%;
+   	transform: scale(0.9);
+	-webkit-transform : scale(0.9); 
+	-o-transform : scale(0.9); 
+	-moz-transform :scale(0.9);
+}
+
+
+.choix .itemMode {
+	width:380px; 
+	
+	margin:10px auto 0 auto;
+	background-position:center center;
+	background-size:contain;
+}
+
+.choix .itemMode>img {margin-bottom:10px; cursor:pointer;}
+.choix .itemMode#facile .BTvert span {background-image:url(../img/BTtxt-facile.png);}
+.choix .itemMode#moyen .BTvert span {background-image:url(../img/BTtxt-moyen.png);}
+.choix .itemMode#difficile .BTvert span {background-image:url(../img/BTtxt-difficile.png);}
+
+
+
+.content.choixniveau .imgcenter {
+	display:block;
+	margin:0 auto;
+}
+
+.instructions{
+	display:block;
+	margin:0 auto 10px;
+	padding-top:00px;
+	width:431px;
+	position:relative;
+}
+
+#PanInstruction1 #close, #PanInstruction2 #close, #PanInstruction3 #close, #PanInstruction3-mob #close {
+	top: 40px; 
+	right:00px;
+}
+
+#PanInstruction1 #next, #PanInstruction2 #next{
+	bottom: -40px;
+	right:10px;
+}
+
+
+
+.panneauxFin {
+	width:601px; height:676px; 
+	position:absolute;
+	z-index:100;
+	left:0;
+	top:0;
+	background:url(../img/img-ecranfin.jpg) no-repeat center top;
+}
+
+.imgmobile{
+	display:none;	
+}
+
+.panneauxFin .blockshare {
+	display: block;
+	position: absolute;
+	left: 218px;
+	top: 274px;
+}
+.panneauxFin p {
+	display: block;
+	position: absolute;
+	left: 190px;
+	top: 170px;
+	width: 250px;
+	height: 52px;
+	font-family: 'Luckiest Guy', cursive;
+	font-size:20px;
+	color:#0054A4;
+	text-align:center;
+	letter-spacing:1px;
+}
+
+.panneauxFin #IBTrecommencer {left: 200px; top: 380px;}
+.panneauxFin #IBTmenujeux {left: 200px; top: 455px;}

@@ -1,0 +1,154 @@
+@charset "utf-8";
+
+/* version mobile portrait 320px*/
+@media only screen and (max-width: 600px) {	
+
+/* CSS Document */
+html {width:100%; overflow:hidden;}
+body{margin:0; padding:0;}
+.wrapper {
+	width:100%!important; 
+	height:770px; 
+	border:none;
+	background-color:#f1dd70;
+	border-radius:0!important; 
+	webkit-border-radius:0!important; 
+	background-clip:none;;  
+	-moz-background-clip: none;  
+	-webkit-background-clip: none;
+}
+
+/* home */
+.content {width:100%;}
+.content.home {	background:url(../img/bacgkroundHome.jpg) no-repeat center top; background-size:contain;}
+
+
+
+
+/*bt*/
+.BTvertCourt {
+	width: 70%;
+	height: 60px;
+	background: url(../img/BT-vertCourt.png) no-repeat center center;
+	background-size: 100%;
+	position:relative;
+	margin:0 auto;
+	
+}
+.BTvertCourt span {width:100%; height:100%; display:block; background: no-repeat center center; background-size:70%; color:rgba(255,255,255,0); text-align:center; line-height:70px;}
+.BTvertCourt.down {background-size:88%;}
+.BTvertCourt.down span {background-size:60%;}
+
+/* choix 
+*/
+
+
+.content.choixniveau {
+	background:url(../img/fond-resp.gif) no-repeat center top;
+	padding:30px 10% 0;
+	width:80%;
+	background-size:contain;
+	margin:0 auto;
+}
+
+.choix {width:100%; }
+.choix img.titrechoix {width:80%;padding:0px; margin:0px auto 5% !important;}
+
+/* 242x232 = 0.96*/
+.choix img.btimg {
+	width:40%;
+	
+	border:2px solid rgba(82,73,64,0.4);
+	margin:10px 0 0 8%;
+}
+.choix img.btimg:nth-child(2n+1) {margin:10px 0 0 2%;}
+.choix .itemMode {
+	width:80%;
+	margin:10px auto 0 auto;
+}
+
+.choix .itemMode>img {margin-bottom:0px; width:100%;height:auto; }
+
+.instructions{
+	width:100%;
+	margin:10px auto 20px auto;
+}
+
+.content.choixniveau .imgcenter {
+	display:block;
+	width:89%;
+	height:auto;
+	margin:0px;
+}
+
+/* jeu */
+
+
+#PanInstruction1 #close, #PanInstruction2 #close, #PanInstruction3 #close, #PanInstruction3-mob #close{
+	top: 0px; 
+	right:-30px;
+}
+#PanInstruction1 #next,#PanInstruction2 #next{
+	bottom: 0px;
+	right: -20px;
+}
+#PanInstruction1 .titrechoix, #PanInstruction2 .titrechoix, #PanInstruction3 .titrechoix, #PanInstruction3-mob .titrechoix{
+	width:90%;
+	margin:0px 20px 10px 0px;
+}
+
+
+.imgmobile{
+	display:block;	
+}
+
+.panneauxFin {
+	width:100%; 
+	height:680px; 
+	position:absolute;
+	z-index:100;
+	left:0;
+	top:0;
+	background:url(../img/ecranfin-mob.jpg) no-repeat center top #f1dd70;
+	background-size:contain;
+	
+}
+.panneauxFin .imgmobile{
+	width:100%; 
+	height:auto; 
+}
+
+.panneauxFin p {
+	display: block;
+	position: relative;
+	left:auto;
+	top: 10px;
+	width: 250px;
+	height: 52px;
+	margin:0 auto;
+	
+}
+
+.panneauxFin .blockshare {
+	display: block;
+	position: relative;
+	left: auto;
+	top: auto;
+	margin:20px auto 5px auto ;
+	background-color:rgba(255,255,255,0.8);
+	padding:10px;
+	border-radius:10px;
+	
+	
+}
+
+.panneauxFin .BTvert {margin:0 auto 5px; left:auto; position:relative; top:0;}
+.panneauxFin #IBTrecommencer {top:0; left:0;}
+.panneauxFin #IBTmenujeux {top:0;left:0;}
+
+	
+}
+
+
+
+

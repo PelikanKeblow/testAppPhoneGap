@@ -9,8 +9,22 @@ body{
 	padding:0px;
 }
 
+
+.logo-horizons{
+	display:block;
+	width:315px;
+	height:73px;
+	background-repeat:no-repeat;
+	background-position:center center;
+	background-image:url(../assets/img/home/horizons-logo.png);
+	background-size:contain;
+}
+
+
+
+
 #content{
-	background-color:#000;	
+	background-color:#FFF;	
 }
 #diapo{
 	position:relative;
@@ -22,4 +36,75 @@ body{
 #diapo .diapo img{
 	position:absolute;
 	z-index:3;
+}
+
+#home{
+	position:absolute;
+	overflow:hidden;
+}
+#home-background{
+	position:absolute;
+	width:100%;
+	height:468px;
+	z-index:1;
+	background: #d2dadc; /* Old browsers */
+	background: -moz-linear-gradient(top,  #d2dadc 0%, #fafbfb 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d2dadc), color-stop(100%,#fafbfb)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #d2dadc 0%,#fafbfb 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #d2dadc 0%,#fafbfb 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #d2dadc 0%,#fafbfb 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #d2dadc 0%,#fafbfb 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2dadc', endColorstr='#fafbfb',GradientType=0 ); /* IE6-9 */
+}
+#home-cloud{
+	position:absolute;
+	width:100%;
+	height:468px;
+	z-index:2;
+	background:url(../assets/img/home/home-background.png) no-repeat top center;
+}
+
+#home-bottom{
+	position:absolute;
+	width:100%;
+	min-height:120px;
+	z-index:10;
+	top:468px;
+	background: #e5e5e5; /* Old browsers */
+	background: -moz-linear-gradient(top,  #e5e5e5 0%, #ffffff 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5e5e5), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #e5e5e5 0%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #e5e5e5 0%,#ffffff 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #e5e5e5 0%,#ffffff 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #e5e5e5 0%,#ffffff 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
+}
+#home-bottom .logo-horizons{
+	margin:60px auto 0px auto;
+}
+
+#home-content{
+	position:absolute;
+	z-index:10;
+	top:0px;
+	overflow:hidden;
+}
+
+.plan{
+	position:absolute;
+	top:140px;
+}
+
+.profil{
+	position:absolute;
+	width:468px;
+	height:331px;
+	background-repeat:no-repeat;
+	background-position:center center;
+	background-image:url(../assets/img/home/home_hafida.png);
+}
+
+.overlay{
+	position:absolute;
+	z-index:50;
 }

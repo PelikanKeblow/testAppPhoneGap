@@ -1,0 +1,64 @@
+
+<html>
+<head>
+<title>Nesquik - Le petit-déjeuner des champions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=no" />
+<link href='http://fonts.googleapis.com/css?family=Luckiest+Guy' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Corben:400,700' rel='stylesheet' type='text/css'>
+<link href="inc/css/bolgame.css" rel="stylesheet" type="text/css" />
+<link href="inc/css/bolgame-resp.css" rel="stylesheet" type="text/css" />
+<script language="javascript" src="inc/js/jquery-1.11.1.min.js"></script>
+<script language="javascript" src="inc/js/jquery-ui-1.10.4.custom.min.js"></script>
+<script language="javascript" src="inc/js/jquery.ui.touch-punch.min.js"></script>
+<script language="javascript" src="inc/js/core-screen.js"></script>
+
+<script language="javascript" src="inc/js/dotwitt.js"></script>
+<script language="javascript" type="text/javascript">
+
+
+$(document).ready(function() {
+	
+	// storage
+	if(localStorage["nesquik.game.bol.save"] == undefined){
+		localStorage["nesquik.game.bol.save"] = true;
+	}
+	if(localStorage["nesquik.game.bol.score.niv<?= $niveau; ?>"] < 5){
+		localStorage["nesquik.game.bol.score.niv<?= $niveau; ?>"] = 5;
+	}
+	
+	
+});
+
+
+</script>
+
+</head>
+
+<body>
+
+
+<div class="wrapper">
+	<div class="panneauxFin" >
+    	<img src="inc/img/ecranfin-mob-bravo.jpg" width="605" height="147" class="imgmobile">
+		<p>Tu as réussi à attraper <span id="tpsfin"><?= $score ; ?></span> BOLS !</p>
+		
+		<img src="inc/img/img-share.png" width="180" height="80" usemap="#Map" class="blockshare" border="0" />
+		<map name="Map">
+			<area shape="rect" coords="0,30,60,80" href="mailto:?subject=Viens jouer avec Quicky&body=<?=($textePartageMail);?>">
+			<area shape="rect" coords="60,30,120,80" href="javascript:doTwit('<?=addslashes($textePartage);?>',' ')";>
+			<area shape="rect" coords="120,30,180,80" href="http://www.facebook.com/share.php?u=<?=urlencode("http://nesquik.msn.com/jeux/");?>" target="_blank">
+		</map>
+		<a class="ablk" href="choix-niveau.html"><div class="BTvert" id="IBTrecommencer" ><span>Recommencer</span></div></a>
+		<a class="ablk" href="http://nesquik.msn.com/jeux" target="_top"><div class="BTvert" id="IBTmenujeux" ><span>Menu des jeux</span></div></a>
+		
+	</div>
+</div>
+<audio id="sound_win"  autoplay="autoplay">
+	<source src="inc/sound/nesquik-win-comp.mp3" type="audio/mpeg">
+	<source src="inc/sound/nesquik-win-comp.ogg" type="audio/ogg">
+</audio>
+</body>
+</html>
