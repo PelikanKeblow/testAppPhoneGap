@@ -61,7 +61,7 @@ function pCalage()
 		widthTo = window.screen.width;
 	}
 	
-	$("#myCanvas").width(Math.min(340,widthTo));
+	$("#myCanvas").width(Math.min(640,widthTo));
 
 	stage.width($("#myCanvas").width());
 	stage.height(stage.width()/RATIO);

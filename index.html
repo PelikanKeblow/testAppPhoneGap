@@ -1,94 +1,132 @@
+<!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="format-detection" content="telephone=no" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-        <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <title>Test</title>
-        <script type="text/javascript" src="phonegap.js"></script>
-        <script src="js/jquery-1.11.1.min.js"></script>
-        <script src="js/jquery.transit.min.js" type="text/javascript"></script>
-        <script type="text/javascript" src="js/diapo.js"></script>
-        <script type="text/javascript" src="js/Calage.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-        
-        <script type="text/javascript">
-            app.initialize();
-			
-			var calageManager;
-			var diapo;
-			
-			
-			$( document ).ready(function() {
- 		
-				
-				calageManager = new Calage();
-								
-				$(document).bind('touchmove',function(e){e.preventDefault();});
-				
-				createDiapo();
-				
-				calageManager.calage();
-				
-				$("#content").bind('mousewheel DOMMouseScroll MozMousePixelScroll', mouseWheenEvent);
-			
-				
-				
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=no" />
+<title>Horizon</title>
+<link href="assets/css/reset.css" rel="stylesheet" type="text/css">
+<link href="assets/css/horison.css" rel="stylesheet" type="text/css">
+
+
+<script type="text/javascript" src="assets/js/kinetic-v5.1.0.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="assets/js/assets.js"></script>
+<script type="text/javascript" src="assets/js/core.js"></script>
+
+</head>
+
+<body>
+	<div id="myCanvas"></div>
+	
+    <script>
+	
+		var new_ratio = 1;
+		var INIT_WIDTH = 1024;
+	  	var INIT_HEIGHT = 768;
+		var RATIO = INIT_WIDTH/INIT_HEIGHT;
+		
+		var main_layer = null;
+		
+		var pos = {x:0,y:0};
+		var onMove = false;
+		var diapoGroup;
+		var diapoIndex = 0;
+		
+		// key event
+		$(window).bind('touchstart', touchStart);
+		$(window).bind('touchend',touchEnd);
+		$(window).bind('touchmove', touchMove);
+		
+		function diapoMove(sens){
+			diapoIndex = Math.min(0, diapoIndex+sens);
+			onMove = false;
+			var tween = new Kinetic.Tween({
+			  node: diapoGroup,
+			  x:diapoIndex*1024,
+			  duration: 0.6,
+			  easing: Kinetic.Easings.EaseOut
 			});
-			
-			function mouseWheenEvent(event, delta){
+			tween.play();
+		}
+		
+		function touchStart(e) {
+			pos.x = event.touches[0].pageX;
+			pos.y = event.touches[0].pageY;
+			onMove = true;
+		}
+		function touchEnd(e) {
+			onMove = false;
+		}
 				
-				if(diapo !=null){
-					e = event.originalEvent;
-					var delta = e.wheelDelta>0||e.detail<0?1:-1;
-					diapo.moveSection(-delta);
+		function touchMove(e){
+			
+			if(onMove){
+				
+				offset = {};
+				
+				offset.x = pos.x - event.touches[0].pageX;
+				offset.y = pos.y - event.touches[0].pageY;
+				
+				if(Math.abs(offset.x)>100){
+					if(offset.x < 0 ){
+						diapoMove(1);
+					}
+					if(offset.x > 0 ){
+						diapoMove(-1);	
+					}
 				}
 				
-			
-			
-			}
-			
-			
-			function createDiapo()
-			{
-				$("#diapo").append('<div id="diapo0" class="diapo calage_fullresize" ><img src="assets/img/photo_5.jpg" width="1024" height="683" class="calage_fullratio"></div>');	
-				$("#diapo").append('<div id="diapo1" class="diapo calage_fullresize" ><img src="assets/img/photo_6.jpg" width="1024" height="683" class="calage_fullratio"></div>');	
-				$("#diapo").append('<div id="diapo2" class="diapo calage_fullresize" ><img src="assets/img/photo_7.jpg" width="1024" height="683" class="calage_fullratio"></div>');	
-				
-				diapo = new DiapoPlayer(0, 3, "#diapo", moveBefore, moveAfter, onUpdateDiapo,"slideLR","slideH");
-				diapo.start();
-				
-				calageManager.calage();
-			}
-			
-			function moveBefore(){
 				
 			}
 			
-			function moveAfter(){
-				
-			}
+		
+		}
+		
+		// start
+		function start()
+		{
 			
-			function onUpdateDiapo(){
-				
-			}
+			// STAGE
+			stage = new Kinetic.Stage({
+				container: 'myCanvas',
+				width: INIT_WIDTH,
+				height: INIT_HEIGHT
+			});
+			
+			main_layer = new Kinetic.Layer();
+			stage.add(main_layer); 
 			
 			
-        </script>
-    </head>
-    <body>
-        <div data-role="page" id="app">
-          
-          <div id="content" class="calage_fullresize">
-          	
-            	
-                	<div id="diapo" class="calage_fullresize_nolimit"></div>
-                
-            
-          </div>
-          
-          
-        </div>
-        
-    </body>
+			// diapo group
+			diapoGroup = new Kinetic.Group({x: 0,y: 0});
+			
+			// creation Diapo
+			var obj_img1 = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  image: imagePhoto1
+			});
+			diapoGroup.add(obj_img1);
+			var obj_img2 = new Kinetic.Image({ 
+			  x: 1024,
+			  y: 0,
+			  image: imagePhoto2
+			});
+			diapoGroup.add(obj_img2);
+			var obj_img3 = new Kinetic.Image({ 
+			  x: 2048,
+			  y: 0,
+			  image: imagePhoto3
+			});
+			diapoGroup.add(obj_img3);
+			
+			main_layer.add(diapoGroup);
+			main_layer.draw();
+			
+			pCalage();
+		}
+	
+	</script>
+    
+</body>
 </html>
