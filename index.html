@@ -8,125 +8,15 @@
 <link href="assets/css/horison.css" rel="stylesheet" type="text/css">
 
 
-<script type="text/javascript" src="assets/js/kinetic-v5.1.0.min.js"></script>
-<script type="text/javascript" src="assets/js/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="assets/js/assets.js"></script>
-<script type="text/javascript" src="assets/js/core.js"></script>
-
 </head>
 
 <body>
-	<div id="myCanvas"></div>
 	
-    <script>
-	
-		var new_ratio = 1;
-		var INIT_WIDTH = 1024;
-	  	var INIT_HEIGHT = 768;
-		var RATIO = INIT_WIDTH/INIT_HEIGHT;
-		
-		var main_layer = null;
-		
-		var pos = {x:0,y:0};
-		var onMove = false;
-		var diapoGroup;
-		var diapoIndex = 0;
-		
-		// key event
-		$(window).bind('touchstart', touchStart);
-		$(window).bind('touchend',touchEnd);
-		$(window).bind('touchmove', touchMove);
-		
-		function diapoMove(sens){
-			diapoIndex = Math.min(0, diapoIndex+sens);
-			onMove = false;
-			var tween = new Kinetic.Tween({
-			  node: diapoGroup,
-			  x:diapoIndex*1024,
-			  duration: 0.6,
-			  easing: Kinetic.Easings.EaseOut
-			});
-			tween.play();
-		}
-		
-		function touchStart(e) {
-			pos.x = event.touches[0].pageX;
-			pos.y = event.touches[0].pageY;
-			onMove = true;
-		}
-		function touchEnd(e) {
-			onMove = false;
-		}
-				
-		function touchMove(e){
-			
-			if(onMove){
-				
-				offset = {};
-				
-				offset.x = pos.x - event.touches[0].pageX;
-				offset.y = pos.y - event.touches[0].pageY;
-				
-				if(Math.abs(offset.x)>100){
-					if(offset.x < 0 ){
-						diapoMove(1);
-					}
-					if(offset.x > 0 ){
-						diapoMove(-1);	
-					}
-				}
-				
-				
-			}
-			
-		
-		}
-		
-		// start
-		function start()
-		{
-			
-			// STAGE
-			stage = new Kinetic.Stage({
-				container: 'myCanvas',
-				width: INIT_WIDTH,
-				height: INIT_HEIGHT
-			});
-			
-			main_layer = new Kinetic.Layer();
-			stage.add(main_layer); 
-			
-			
-			// diapo group
-			diapoGroup = new Kinetic.Group({x: 0,y: 0});
-			
-			// creation Diapo
-			var obj_img1 = new Kinetic.Image({ 
-			  x: 0,
-			  y: 0,
-			  image: imagePhoto1
-			});
-			diapoGroup.add(obj_img1);
-			var obj_img2 = new Kinetic.Image({ 
-			  x: 1024,
-			  y: 0,
-			  image: imagePhoto2
-			});
-			diapoGroup.add(obj_img2);
-			var obj_img3 = new Kinetic.Image({ 
-			  x: 2048,
-			  y: 0,
-			  image: imagePhoto3
-			});
-			diapoGroup.add(obj_img3);
-			
-			main_layer.add(diapoGroup);
-			main_layer.draw();
-			
-			pCalage();
-		}
-	
-	</script>
+   </h1>HORIZON</h1>
+   <br /><br />
+   <a href="diapo.html">Diapo</a>
+   <br /><br />
+   <a href="home.html">Home</a>
     
 </body>
 </html>

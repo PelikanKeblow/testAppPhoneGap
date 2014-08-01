@@ -1,19 +1,25 @@
  
   // load images
-  var liste_image = new Array();
-  var index_load = 0;
- 
-  // images
-  var imagePhoto1 = new Image();
-  imagePhoto1.src = 'assets/img/photo_5.jpg';
-  liste_image.push(imagePhoto1);
+  var sources = {};
   
-  var imagePhoto2 = new Image();
-  imagePhoto2.src = 'assets/img/photo_6.jpg';
-  liste_image.push(imagePhoto2);
+  sources.logo = 'assets/img/horizons-logo.png';
   
-  var imagePhoto3 = new Image();
-  imagePhoto3.src = 'assets/img/photo_7.jpg';
-  liste_image.push(imagePhoto3);
+  switch(page){
+	
+	case "home":
+	  sources.homeback = 'assets/img/home/back-home.jpg';
+	  sources.deg_footer = 'assets/img/home/home_deg_footer.jpg';
+	  sources.vignette_0 = 'assets/img/home/home_hafida.png';
+	  sources.flou_0 = 'assets/img/home/home_hafida_fl.png';
+	  
+	break;
+	case "profil-hafida":
+	  sources.imagePhoto1 = 'assets/img/photo_5.jpg';
+	  sources.imagePhoto2 = 'assets/img/photo_6.jpg';
+	  sources.imagePhoto3 = 'assets/img/photo_7.jpg';
+	break; 
+	  
+  }
+
   
   

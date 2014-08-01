@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=no" />
+<title>Horizon</title>
+<link href="assets/css/reset.css" rel="stylesheet" type="text/css">
+<link href="assets/css/horison.css" rel="stylesheet" type="text/css">
+
+<script> var page='home'; </script>
+<script type="text/javascript" src="assets/js/kinetic-v5.1.0.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="assets/js/assets.js"></script>
+<script type="text/javascript" src="assets/js/core.js"></script>
+
+</head>
+
+<body>
+	<div id="loading">Chargement...</div>
+	<div id="myCanvas"></div>
+	
+    <script>
+	
+		var new_ratio = 1;
+		var INIT_WIDTH = 1024;
+	  	var INIT_HEIGHT = 768;
+		var RATIO = INIT_WIDTH/INIT_HEIGHT;
+		var appStarted = false;
+		var main_layer = null;
+		
+		var asset = null;
+		
+		
+		var diapoGroup;
+		var diapoIndex = 0;
+		
+		
+		var slide_data = new Object();
+		slide_data.onMove = false;
+		slide_data.pos = {x:0,y:0};
+		
+		var navigation_back  =  null;
+		var navigation_front =  null;
+		
+		// key event
+		$(window).bind('touchstart', touchStart);
+		$(window).bind('touchend',touchEnd);
+		$(window).bind('touchmove', touchMove);
+		
+		
+		function touchStart(e) {
+			slide_data.pos.x = event.touches[0].pageX;
+			slide_data.pos.y = event.touches[0].pageY;
+			slide_data.onMove = true;
+		}
+		function touchEnd(e) {
+			slide_data.onMove = false;
+		}
+		function touchMove(e){
+			
+			if(slide_data.onMove){
+				
+				offset = {};
+				
+				offset.x = slide_data.pos.x - event.touches[0].pageX;
+				offset.y = slide_data.pos.y - event.touches[0].pageY;
+				
+				navigation_back.x(navigation_back.x()-(offset.x)*0.075);
+				navigation_front.x(navigation_front.x()-(offset.x)*0.2);
+				main_layer.draw();
+			}
+			
+		
+		}
+		
+		
+		// start
+		function Init()
+		{
+			// STAGE
+			stage = new Kinetic.Stage({
+				container: 'myCanvas',
+				width: INIT_WIDTH,
+				height: INIT_HEIGHT
+			});
+			
+			main_layer = new Kinetic.Layer();
+			stage.add(main_layer); 
+			
+			
+			// construct
+			Construct();
+			
+			// start
+			Start();
+		}
+		
+		function Construct()
+		{
+			// background
+			var asset_back_home = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  image: asset.homeback
+			});
+			main_layer.add(asset_back_home);
+			
+			// footer
+			var footer_home =  new Kinetic.Group({x: 0,y: INIT_HEIGHT-302});
+			main_layer.add(footer_home);
+			
+			// fotter - back
+			var rect_deg = new Kinetic.Rect({
+			  width: INIT_WIDTH,
+			  height: 302,
+			 fillPatternImage:asset.deg_footer
+			});
+			footer_home.add(rect_deg);
+			
+			// footer logo
+			var asset_logo = new Kinetic.Image({ 
+			  y: 60,
+			  image: asset.logo
+			});
+			asset_logo.x(INIT_WIDTH*0.5 - asset_logo.width()*0.5);
+			footer_home.add(asset_logo);
+			
+			main_layer.add(footer_home);
+			
+			
+			// Navigation
+			var navigation_content =  new Kinetic.Group({x: 0,y: 0});
+			navigation_back =  new Kinetic.Group({x: 0,y: 212});
+			navigation_front =  new Kinetic.Group({x: 0,y: 135});
+			
+			for(var i=0; i< 10; i++){
+				var asset_logo = new Kinetic.Image({
+					x:650*i,
+			  		//image: asset["vignette_"+i]
+					image: asset.vignette_0
+				});
+				
+				navigation_front.add(asset_logo);
+				
+			}
+			for(var i=0; i< 10; i++){
+				var asset_logo = new Kinetic.Image({
+					x:350+800*i,
+			  		//image: asset["flou_"+i]
+					image: asset.flou_0
+				});
+				
+				navigation_back.add(asset_logo);
+				
+			}
+			
+			
+			
+			navigation_content.add(navigation_back);
+			navigation_content.add(navigation_front);
+			main_layer.add(navigation_content);
+			
+		}
+		
+		function Start()
+		{
+			main_layer.draw();
+			appStarted = true;
+			pCalage();
+		}
+		
+	
+	</script>
+    
+</body>
+</html>

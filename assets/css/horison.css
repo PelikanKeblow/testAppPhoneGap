@@ -1,2 +1,14 @@
 /* CSS Document */
 
+body{
+	overflow:hidden;	
+}
+
+#myCanvas{
+	width:1024px;
+	height:768px;
+}
+
+#loading{
+	position:absolute;	
+}
