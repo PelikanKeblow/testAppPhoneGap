@@ -27,7 +27,6 @@
 		var RATIO = INIT_WIDTH/INIT_HEIGHT;
 		var appStarted = false;
 		var main_layer = null;
-		var onEnterFrame = null;
 		
 		var asset = null;
 		
@@ -35,7 +34,7 @@
 		var diapoGroup;
 		var diapoIndex = 0;
 		
-		
+		var move_ligne = null;
 		var slide_data = new Object();
 		slide_data.onMove = false;
 		slide_data.pos = {x:0,y:0};
@@ -94,9 +93,19 @@
 		
 		function slideHome(offset)
 		{
-			navigation_back.x(Math.min(navigation_back.x()-(offset)*0.055,0));
-			navigation_front.x(Math.min(navigation_front.x()-(offset)*0.1,0));
-			main_layer.draw();
+			
+			if(navigation_front.x() > 0 ){
+				navigation_front.x(0);
+				navigation_back.x(0);
+			}else if(navigation_front.x() < -navigation_front.width()+INIT_WIDTH*1.5){
+				navigation_front.x(-navigation_front.width()+INIT_WIDTH*1.5);
+			}else{
+				navigation_back.move({x:-(offset)*0.055,y:0});
+				navigation_front.move({x:-(offset)*0.1,y:0});
+				move_ligne.x(Math.abs((navigation_front.x() / navigation_front.width()))*(892-260*0.5));
+				main_layer.draw();
+			}
+			
 		}
 		
 		
@@ -104,6 +113,7 @@
 		function Init()
 		{
 			// STAGE
+			Kinetic.pixelRatio = 1;
 			stage = new Kinetic.Stage({
 				container: 'myCanvas',
 				width: INIT_WIDTH,
@@ -151,8 +161,42 @@
 			asset_logo.x(INIT_WIDTH*0.5 - asset_logo.width()*0.5);
 			footer_home.add(asset_logo);
 			
-			main_layer.add(footer_home);
 			
+			var text_stitre = new Kinetic.Text({
+					x: 0,
+					y: 140,
+					width:INIT_WIDTH,
+					text: 'Une expérience interactive de Carl Cordonnier et Penny Rae',
+					fontSize: 18,
+					fill:'#5f7f88',
+					fontStyle:'italic',
+					align:'center',
+					fontFamily: 'Ubuntu'
+				});	
+				
+			footer_home.add(text_stitre);
+			
+			var ligne_content =  new Kinetic.Group({x: 0,y: 0});
+			var total_ligne = new Kinetic.Rect({
+			  x:0,
+			  y:10,
+			  width: 892,
+			  height: 2,
+			  fill: '#000000'
+			});
+			ligne_content.add(total_ligne);
+			move_ligne = new Kinetic.Rect({
+			  x:0,
+			  y:10,
+			  width: 260,
+			  height: 2,
+			  fill: '#ff3661'
+			});
+			ligne_content.add(move_ligne);
+			ligne_content.x(INIT_WIDTH*0.5 - 446);
+			footer_home.add(ligne_content);
+			
+			main_layer.add(footer_home);
 			
 			// Navigation
 			var navigation_content =  new Kinetic.Group({x: 0,y: 0});
@@ -179,36 +223,40 @@
 				navigation_back.add(asset_logo);
 				
 			}
-			
-			onEnterFrame = new Kinetic.Animation(function(frame) {
-         
-			 	slideHome(diff);
-			  	
-				if (!slide_data.onMove) {
-					if (Math.abs(diff) <= 0.2) {
-						diff = 0;
-					}else {
-						diff = diff * 0.8;
-					}
-					
-				}
-			  
-			}, main_layer);
-			
+			navigation_front.width(11*650)
 			
 			navigation_content.add(navigation_back);
 			navigation_content.add(navigation_front);
 			main_layer.add(navigation_content);
 			
-			
-			
+			var cloud_on = new Kinetic.Image({
+					x:INIT_WIDTH*0.5,
+					y:INIT_HEIGHT-426,
+					image: asset.cloud
+			});
+			cloud_on.x(cloud_on.x() - cloud_on.width()*0.5);
+			main_layer.add(cloud_on);
+		}
+		
+		function onEnterFrame() {
+				slideHome(diff);
+			  	
+				if (!slide_data.onMove) {
+					if (Math.abs(diff) <= 0.2) {
+						diff = 0;
+					}else {
+						diff = diff * 0.6;
+					}
+					
+				}
+				setTimeout(onEnterFrame, 15);
 		}
 		
 		function Start()
 		{
 			main_layer.draw();
 			appStarted = true;
-			onEnterFrame.start();
+			onEnterFrame();
 			pCalage();
 		}
 		

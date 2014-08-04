@@ -11,6 +11,8 @@
 	  sources.deg_footer = 'assets/img/home/home_deg_footer.jpg';
 	  sources.vignette_0 = 'assets/img/home/home_hafida.png';
 	  sources.flou_0 = 'assets/img/home/home_hafida_fl.png';
+	  sources.cloud = 'assets/img/home/home_cloud.png';
+	  
 	  
 	break;
 	case "profil-hafida":

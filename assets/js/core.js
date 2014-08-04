@@ -71,7 +71,7 @@ function pCalage()
 		$("#myCanvas").width(widthTo);
 	
 		stage.width($("#myCanvas").width());
-		stage.height(stage.width()/RATIO);
+		stage.height(Math.ceil(stage.width()/RATIO));
 	
 		new_ratio = $("#myCanvas").width()/INIT_WIDTH;
 		main_layer.scale({x:new_ratio,y:new_ratio});
