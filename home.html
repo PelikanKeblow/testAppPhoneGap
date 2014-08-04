@@ -27,6 +27,7 @@
 		var RATIO = INIT_WIDTH/INIT_HEIGHT;
 		var appStarted = false;
 		var main_layer = null;
+		var onEnterFrame = null;
 		
 		var asset = null;
 		
@@ -38,39 +39,64 @@
 		var slide_data = new Object();
 		slide_data.onMove = false;
 		slide_data.pos = {x:0,y:0};
+		var diff = 0;
 		
 		var navigation_back  =  null;
 		var navigation_front =  null;
 		
 		// key event
-		$(window).bind('touchstart', touchStart);
-		$(window).bind('touchend',touchEnd);
-		$(window).bind('touchmove', touchMove);
+		if(isMobile.any()){
+			$(window).bind('touchstart', touchStart);
+			$(window).bind('touchend',touchEnd);
+			$(window).bind('touchmove', touchMove);
+		}else{
+			$(window).mousedown(onPressSlide);
+			$(window).mouseup(onReleaseSlide);
+			$(window).mousemove(onMoveSlide);
+		}
 		
+		function onPressSlide(e)
+		{
+			slide_data.pos.x = e.pageX;
+			slide_data.onMove = true;
+		}
+		function onReleaseSlide(e)
+		{
+			slide_data.onMove = false;
+		}
+		function onMoveSlide(e)
+		{
+			if(slide_data.onMove){
+				
+				offset = {};
+				offset.x = slide_data.pos.x - e.pageX;
+				diff = slide_data.pos.x - e.pageX;
+				//slideHome(offset.x);
+			}
+		}
 		
 		function touchStart(e) {
 			slide_data.pos.x = event.touches[0].pageX;
-			slide_data.pos.y = event.touches[0].pageY;
 			slide_data.onMove = true;
 		}
 		function touchEnd(e) {
 			slide_data.onMove = false;
 		}
 		function touchMove(e){
-			
 			if(slide_data.onMove){
 				
 				offset = {};
-				
-				offset.x = slide_data.pos.x - event.touches[0].pageX;
-				offset.y = slide_data.pos.y - event.touches[0].pageY;
-				
-				navigation_back.x(navigation_back.x()-(offset.x)*0.075);
-				navigation_front.x(navigation_front.x()-(offset.x)*0.2);
-				main_layer.draw();
+				//offset.x = slide_data.pos.x - event.touches[0].pageX;
+				diff = slide_data.pos.x - event.touches[0].pageX;
+				//slideHome(offset.x);
 			}
-			
+		}
 		
+		function slideHome(offset)
+		{
+			navigation_back.x(Math.min(navigation_back.x()-(offset)*0.055,0));
+			navigation_front.x(Math.min(navigation_front.x()-(offset)*0.1,0));
+			main_layer.draw();
 		}
 		
 		
@@ -154,11 +180,27 @@
 				
 			}
 			
+			onEnterFrame = new Kinetic.Animation(function(frame) {
+         
+			 	slideHome(diff);
+			  	
+				if (!slide_data.onMove) {
+					if (Math.abs(diff) <= 0.2) {
+						diff = 0;
+					}else {
+						diff = diff * 0.8;
+					}
+					
+				}
+			  
+			}, main_layer);
 			
 			
 			navigation_content.add(navigation_back);
 			navigation_content.add(navigation_front);
 			main_layer.add(navigation_content);
+			
+			
 			
 		}
 		
@@ -166,6 +208,7 @@
 		{
 			main_layer.draw();
 			appStarted = true;
+			onEnterFrame.start();
 			pCalage();
 		}
 		
