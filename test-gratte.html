@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=no" />
+<title>Horizon</title>
+<link href="assets/css/reset.css" rel="stylesheet" type="text/css">
+<link href="assets/css/horison.css" rel="stylesheet" type="text/css">
+
+<script> var page='test-gratte'; </script>
+<script type="text/javascript" src="assets/js/kinetic-v5.1.0.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="assets/js/calage.js"></script>
+<script type="text/javascript" src="assets/js/assets.js"></script>
+<script type="text/javascript" src="assets/js/core.js"></script>
+
+</head>
+
+<body>
+	<div id="loading" class="calage_fullresize"></div>
+	<div id="myCanvas"></div>
+	
+    <script>
+		
+		var calageManager = null;
+		
+		var new_ratio = 1;
+		var INIT_WIDTH = 1024;
+	  	var INIT_HEIGHT = 768;
+		var RATIO = INIT_WIDTH/INIT_HEIGHT;
+		var appStarted = false;
+		var main_layer = null;
+		
+		var asset = null;
+		
+		var clic_point = new Array();
+		var clic_grat = false;
+		//
+		if(isMobile.any()){
+			$(window).bind('touchstart', touchStart);
+			$(window).bind('touchend',onReleaseSlide);
+			$(window).bind('touchmove', touchMove);
+		}else{
+			$(window).mousedown(onPressSlide);
+			$(window).mouseup(onReleaseSlide);
+			$(window).mousemove(onMoveSlide);
+		}
+		function touchStart(e)
+		{
+			clic_grat = true;
+			createUnMaskedCircle(event.touches[0].pageX, event.touches[0].pageY);
+		}
+		function touchMove(e)
+		{
+			if(clic_grat){
+				createUnMaskedCircle(event.touches[0].pageX,event.touches[0].pageY);
+			}
+		}
+		function onPressSlide(e)
+		{
+			clic_grat = true;
+			createUnMaskedCircle(e.pageX,e.pageY);
+		}
+		function onReleaseSlide(e)
+		{
+			clic_grat = false;
+		}
+		function onMoveSlide(e)
+		{
+			if(clic_grat){
+				createUnMaskedCircle(e.pageX,e.pageY);
+			}
+			
+		}
+		
+		
+		// start
+		function Init()
+		{
+			// STAGE
+			Kinetic.pixelRatio = 1;
+			stage = new Kinetic.Stage({
+				container: 'myCanvas',
+				width: INIT_WIDTH,
+				height: INIT_HEIGHT
+			});
+			
+			main_layer = new Kinetic.Layer();
+			stage.add(main_layer); 
+			
+			
+			// construct
+			Construct();
+			
+			// start
+			Start();
+		}
+		
+		function Construct()
+		{
+			var onEnterFrame = new Kinetic.Animation(function(frame) {}, main_layer);
+			//onEnterFrame.start();
+		}
+		
+		function createUnMaskedCircle(_x,_y)
+		{
+			
+			var canTrace = true;
+			
+			for(var i=0;i<clic_point.length;i++){
+				
+				if(_x >= clic_point[i].x-20 && _x <= clic_point[i].x+20 && _y >= clic_point[i].y-20 && _y <= clic_point[i].y+20){
+					canTrace = false;
+				}
+				
+			}
+			
+			
+			if (canTrace){
+				
+				var ring = new Kinetic.Circle({
+				  x:_x/new_ratio,y:_y/new_ratio,
+				  fillPatternOffset: {x:_x/new_ratio, y:_y/new_ratio},
+				  radius: 40,
+				  fillPatternImage: asset.backgrat
+				});
+				main_layer.add(ring);
+
+				
+				clic_point.push({x:_x, y:_y})
+			}
+			
+			main_layer.draw();
+			
+			
+		}
+		
+		function onEnterFrame() {
+				
+		}
+		
+		
+		function Start()
+		{
+			main_layer.draw();
+			appStarted = true;
+			
+			calageManager.calage();
+		}
+		
+	
+	</script>
+    
+</body>
+</html>

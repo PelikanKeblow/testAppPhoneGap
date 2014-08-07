@@ -29,11 +29,65 @@ body{
 	overflow:hidden;
 }
 
+/* INDEX TEST */
+
+
+#index h1{
+	display:block;
+	width:auto;
+	height:50px;
+	line-height:40px;
+	font-size:30px;
+	text-align:center;
+}
+#index a{
+	display:block;
+	width:200px;
+	height:50px;
+	margin:20px auto 0px auto;
+	text-align:center;
+	line-height:50px;
+	font-size:25px;
+	color:#000;
+	background-color:#CCC;
+}
+
+/* DEBUG */
+
+#debug{
+	position:fixed;
+	z-index:999;
+	top:0;
+	left:0;	
+}
+a.debug_back{
+	display:block;
+	width:60px;
+	height:40px;
+	line-height:40px;
+	background-color:#000;
+	color:#FFF;
+	text-align:center;
+}
+
+
 #myCanvas{
 	width:1024px;
 	height:768px;
 }
 
 #loading{
-	position:absolute;	
+	position:absolute;
+	background-color:#FFF;
+	background-image:url(../img/horizons-logo.png);
+	background-repeat:no-repeat;
+	background-position:center center;
+}
+.hide{
+	-webkit-transition: opacity .2s 0 ease-in-out;
+	-moz-transition: opacity .2s 0s ease-in-out;
+	-ms-transition: opacity .2s 0 ease-in-out;
+	-o-transition: opacity .2s 0 ease-in-out;
+	transition: opacity .2s 0s ease-in-out;
+	opacity:0;
 }

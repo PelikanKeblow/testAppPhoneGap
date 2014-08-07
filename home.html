@@ -10,17 +10,20 @@
 <script> var page='home'; </script>
 <script type="text/javascript" src="assets/js/kinetic-v5.1.0.min.js"></script>
 <script type="text/javascript" src="assets/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="assets/js/calage.js"></script>
 <script type="text/javascript" src="assets/js/assets.js"></script>
 <script type="text/javascript" src="assets/js/core.js"></script>
 
 </head>
 
 <body>
-	<div id="loading">Chargement...</div>
+	<div id="loading" class="calage_fullresize"></div>
 	<div id="myCanvas"></div>
 	
     <script>
-	
+		
+		var calageManager = null;
+		
 		var new_ratio = 1;
 		var INIT_WIDTH = 1024;
 	  	var INIT_HEIGHT = 768;
@@ -251,13 +254,16 @@
 				}
 				setTimeout(onEnterFrame, 15);
 		}
+		function onEnterFrame() {
+				
+		}
 		
 		function Start()
 		{
 			main_layer.draw();
 			appStarted = true;
 			onEnterFrame();
-			pCalage();
+			calageManager.calage();
 		}
 		
 	

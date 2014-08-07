@@ -10,17 +10,20 @@
 <script> var page='profil-hafida'; </script>
 <script type="text/javascript" src="assets/js/kinetic-v5.1.0.min.js"></script>
 <script type="text/javascript" src="assets/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="assets/js/calage.js"></script>
 <script type="text/javascript" src="assets/js/assets.js"></script>
 <script type="text/javascript" src="assets/js/core.js"></script>
 
 </head>
 
 <body>
-	<div id="loading">Chargement...</div>
+	<div id="loading" class="calage_fullresize"></div>
 	<div id="myCanvas"></div>
 	
     <script>
-	
+		
+		var calageManager = null;
+		
 		var new_ratio = 1;
 		var INIT_WIDTH = 1024;
 	  	var INIT_HEIGHT = 768;
@@ -37,20 +40,41 @@
 		var diapoIndex = 0;
 		
 		// key event
-		$(window).bind('touchstart', touchStart);
-		$(window).bind('touchend',touchEnd);
-		$(window).bind('touchmove', touchMove);
-		
-		function diapoMove(sens){
-			diapoIndex = Math.min(0, diapoIndex+sens);
+		if(isMobile.any()){
+			$(window).bind('touchstart', touchStart);
+			$(window).bind('touchend',touchEnd);
+			$(window).bind('touchmove', touchMove);
+		}else{
+			$(window).mousedown(onPressSlide);
+			$(window).mouseup(onReleaseSlide);
+			$(window).mousemove(onMoveSlide);
+		}
+
+		function onPressSlide(e){
+			pos.x = e.pageX;
+			onMove = true;
+		}
+		function onReleaseSlide(e){
 			onMove = false;
-			var tween = new Kinetic.Tween({
-			  node: diapoGroup,
-			  x:diapoIndex*1024,
-			  duration: 0.6,
-			  easing: Kinetic.Easings.EaseOut
-			});
-			tween.play();
+		}
+		function onMoveSlide(e){
+			if(onMove){
+				
+				offset = {};
+				
+				offset.x = pos.x - e.pageX;
+				
+				if(Math.abs(offset.x)>100){
+					if(offset.x < 0 ){
+						diapoMove(1);
+					}
+					if(offset.x > 0 ){
+						diapoMove(-1);	
+					}
+				}
+				
+				
+			}
 		}
 		
 		function touchStart(e) {
@@ -84,6 +108,18 @@
 			}
 			
 		
+		}
+		
+		function diapoMove(sens){
+			diapoIndex = Math.min(0, diapoIndex+sens);
+			onMove = false;
+			var tween = new Kinetic.Tween({
+			  node: diapoGroup,
+			  x:diapoIndex*1024,
+			  duration: 0.6,
+			  easing: Kinetic.Easings.EaseOut
+			});
+			tween.play();
 		}
 		
 		// start
@@ -138,7 +174,7 @@
 		{
 			main_layer.draw();
 			appStarted = true;
-			pCalage();
+			calageManager.calage();
 		}
 	
 	</script>

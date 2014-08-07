@@ -20,6 +20,9 @@
 	  sources.imagePhoto2 = 'assets/img/photo_6.jpg';
 	  sources.imagePhoto3 = 'assets/img/photo_7.jpg';
 	break; 
+	case "test-gratte":
+		sources.backgrat = 'assets/img/gratte/cel0.jpg';
+	break;
 	  
   }
 

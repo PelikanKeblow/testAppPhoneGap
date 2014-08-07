@@ -1,18 +1,28 @@
+var debug = true;
+
 $( document ).ready(function() {
 	
 	loadImages(sources, function(images) {
 		asset = images;
-        Init();
-		
+		setTimeout(Init, 1000);
+		$("#loading").addClass('hide');
+       
     });
-
-	$(window).resize(function() {pCalage(); }).trigger("resize");
-	$(window).on("orientationchange",function() {pCalage(); }).trigger("orientationchange");
 	
+	calageManager = new Calage();
+	calageManager.add("calageCanvas", CalageCanvas);
 	
-	//setTimeout(pCalage, 1000);
+	if(debug){
+		addDebug();
+	}
 	
 });
+
+function addDebug()
+{
+	$("body").append("<div id='debug'></div>");
+	$("#debug").append("<a href='index.html' class='debug_back'>Back</a>");
+}
 
 function loadImages(sources, callback) {
   var images = {};
@@ -25,6 +35,7 @@ function loadImages(sources, callback) {
   for(var src in sources) {
 	images[src] = new Image();
 	images[src].onload = function() {
+	  
 	  if(++loadedImages >= numImages) {
 		callback(images);
 	  }
@@ -59,8 +70,9 @@ var isMobile = {
 
 
 
-function pCalage()
+function CalageCanvas()
 {
+	
 	if(appStarted){
 		var widthTo = $(window).width();
 		
@@ -76,7 +88,10 @@ function pCalage()
 		new_ratio = $("#myCanvas").width()/INIT_WIDTH;
 		main_layer.scale({x:new_ratio,y:new_ratio});
 		main_layer.draw();
-	}	
+	}
+	
+	
+	
 }
 
 function NumberDecal(numberTo)
