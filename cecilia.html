@@ -1,0 +1,259 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=no" />
+<title>Horizon</title>
+<link href="assets/css/reset.css" rel="stylesheet" type="text/css">
+<link href="assets/css/horison.css" rel="stylesheet" type="text/css">
+
+<script> var page='profil-cecilia'; </script>
+<script type="text/javascript" src="assets/js/kinetic-v5.1.0.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="assets/js/calage.js"></script>
+<script type="text/javascript" src="assets/js/videoPlayer.js"></script>
+<script type="text/javascript" src="assets/js/hud.js"></script>
+<script type="text/javascript" src="assets/js/assets.js"></script>
+<script type="text/javascript" src="assets/js/core.js"></script>
+
+</head>
+
+<body>
+	<div class="calage_fullresize" id="full">
+	<div id="loading" class="calage_fullresize"></div>
+    <div id="contentForVideo" class="calage_fullresize"></div>
+	<div id="myCanvas"></div>
+    </div>
+
+    <script>
+		
+		var calageManager = null;
+		
+		var new_ratio = 1;
+		var INIT_WIDTH = 1024;
+	  	var INIT_HEIGHT = 768;
+		var RATIO = INIT_WIDTH/INIT_HEIGHT;
+		var appStarted = false;
+		var main_layer = null;
+		var gratte_layer = null;
+		var final_layer = null;
+		
+		var asset = null;
+		var enterframe = null;
+		var content = null;
+		
+		// -- controller variables
+		var pos = {x:0,y:0};
+		var onMove = false;
+		var controlleur_callback = new Array();
+		// --
+		
+		var video;
+		
+		if(isMobile.any()){
+			$(window).bind('touchstart', touchStart);
+			$(window).bind('touchend',touchEnd);
+			$(window).bind('touchmove', touchMove);
+		}else{
+			$(window).mousedown(onPressSlide);
+			$(window).mouseup(onReleaseSlide);
+			$(window).mousemove(onMoveSlide);
+		}
+		function onPressSlide(e)
+		{
+			pos.x = e.pageX;
+			pos.y = e.pageY;
+			onMove = true;
+		}
+		function onReleaseSlide(e)
+		{
+			onMove = false;
+		}
+		function onMoveSlide(e)
+		{
+			if(onMove){
+				
+				offset = {};
+				
+				offset.x = pos.x - e.pageX;
+				offset.y = pos.Y - e.pageY;
+				
+				for(var i=0; i< controlleur_callback.length; i++)
+				{
+					controlleur_callback[i](offset);
+				}
+
+
+			}
+		}
+		
+		function touchStart(e) {
+			pos.x = event.touches[0].pageX;
+			pos.y = event.touches[0].pageY;
+			onMove = true;
+		}
+		function touchEnd(e) {
+			onMove = false;
+		}
+		function touchMove(e){
+			if(onMove){
+				
+				offset = {};
+				
+				offset.x = pos.x - event.touches[0].pageX;
+				offset.y = pos.y - event.touches[0].pageY;
+
+				for(var i=0; i< controlleur_callback.length; i++)
+				{
+					controlleur_callback[i](offset);
+				}
+				
+			}
+		}
+		
+		// start
+		function Init()
+		{
+			// STAGE
+			Kinetic.pixelRatio = 1;
+			stage = new Kinetic.Stage({
+				container: 'myCanvas',
+				width: INIT_WIDTH,
+				height: INIT_HEIGHT
+			});
+			
+			main_layer = new Kinetic.Layer();
+			stage.add(main_layer); 
+			
+			
+			// construct
+			Construct();
+			
+			// start
+			Start();
+		}
+		
+		function Construct()
+		{
+			video = new VideoPlayer({content_id:'contentForVideo', video_id:'video_intro', video_path:'assets/img/cecilia/', video_file:'Hafida_intro', format:['mp4'], onComplete:whenIntroEnd});
+			stage.hide();
+			
+			main_layer.draw();
+		}
+		
+		
+		function whenIntroEnd(){
+			
+			$("#contentForVideo").remove();
+			
+			stage.show();
+			slide_1_start();
+			
+			main_layer.draw();
+		}
+		
+		function slide_1_start()
+		{
+			content = new Kinetic.Group({x: 0,y: 0});
+			
+			var obj_intro = new Kinetic.Image({ 
+			  x: 0,
+			  y: 0,
+			  image: asset.intro
+			});
+			
+			var obj_slide1 = new Kinetic.Image({ 
+			  x: 866,
+			  y: 0,
+			  image: asset.slide_1
+			});
+			
+			var obj_icon = create_icon("hud_slide_left", 837,365, "toleft");
+			
+			content.add(obj_intro);
+			content.add(obj_slide1);
+			content.add(obj_icon);
+			main_layer.add(content);
+			
+			main_layer.draw();
+			
+			controlleur_callback.push(sld_1_controlleur);
+			
+		}
+		
+		function sld_1_controlleur(offset)
+		{
+			if(Math.abs(offset.x)>100){
+				if(offset.x > 0 ){
+					var tween = new Kinetic.Tween({
+					  node: content,
+					  x:-1024,
+					  duration: 0.8,
+					  easing: Kinetic.Easings.EaseOut,
+					  onFinish:function(){
+						  slide_2_start();
+					  }
+					});
+				    tween.play();
+					controlleur_callback.pop();
+				}
+				
+			}
+			
+		}
+		
+		function slide_2_start()
+		{
+			content.removeChildren();
+			
+			
+			for(var i=0;i<6;i++){
+				var bloc = new Kinetic.Image({ 
+				 image: asset["bloc"+i],
+				 x:(i%2)*1024,
+				 y:(Math.floor(i/2))*768,
+				 visible: (i>1)
+				});
+				content.add(bloc);
+			}
+			
+			content.x(0);
+			content.y(-2*768);
+			
+			var tween = new Kinetic.Tween({
+					  node: content,
+					  x:-300,
+					  y:0-768,
+					  duration: 3,
+					  easing: Kinetic.Easings.EaseOut,
+					  onFinish:function(){
+						 
+					  }
+					});
+			tween.play();
+			
+			main_layer.draw();
+		}
+		
+		
+		function onEnterFrame() {
+			enterframe = new Kinetic.Animation(function(frame) {}, main_layer);
+			enterframe.start();
+		}
+		
+		
+		function Start()
+		{
+			main_layer.draw();
+			appStarted = true;
+			
+			onEnterFrame();
+			
+			calageManager.calage();
+		}
+		
+	
+	</script>
+    
+</body>
+</html>

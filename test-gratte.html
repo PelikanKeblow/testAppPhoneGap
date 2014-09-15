@@ -30,6 +30,8 @@
 		var RATIO = INIT_WIDTH/INIT_HEIGHT;
 		var appStarted = false;
 		var main_layer = null;
+		var gratte_layer = null;
+		var final_layer = null;
 		
 		var asset = null;
 		
@@ -98,6 +100,12 @@
 		
 		function Construct()
 		{
+			gratte_layer = new Kinetic.Group();
+			main_layer.add(gratte_layer); 
+			
+			final_layer = new Kinetic.Group();
+			main_layer.add(final_layer); 
+			
 			var onEnterFrame = new Kinetic.Animation(function(frame) {}, main_layer);
 			//onEnterFrame.start();
 		}
@@ -124,8 +132,8 @@
 				  radius: 40,
 				  fillPatternImage: asset.backgrat
 				});
-				main_layer.add(ring);
-
+				gratte_layer.add(ring);
+				gratte_layer.toImage({callback:function(){}});
 				
 				clic_point.push({x:_x, y:_y})
 			}

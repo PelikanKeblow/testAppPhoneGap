@@ -29,6 +29,10 @@ body{
 	overflow:hidden;
 }
 
+#full{
+	overflow:hidden;	
+}
+
 /* INDEX TEST */
 
 
@@ -91,3 +95,4 @@ a.debug_back{
 	transition: opacity .2s 0s ease-in-out;
 	opacity:0;
 }
+
